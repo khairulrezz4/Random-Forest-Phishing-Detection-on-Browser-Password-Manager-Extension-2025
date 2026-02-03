@@ -229,9 +229,8 @@ Check server health.
 ### Real-time Risk Assessment
 - URL analysis on every login
 - Color-coded risk indicators:
-  - 🟢 Green: Safe
-  - 🟡 Yellow: Medium risk
-  - 🔴 Red: Likely phishing
+  - 🟢 Green: Safe (probability < 0.5)
+  - 🔴 Red: Phishing (probability ≥ 0.5)
 - Detailed threat scoring
 
 ### Login Detection
