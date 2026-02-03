@@ -385,7 +385,7 @@ python ML/server.py --debug
 
 ## 👨‍💼 Author
 
-**Khairul Razmi**  
+**Khairul Rezza Bin Razmi**  
 Email: khairul.razmi01@s.unikl.edu.my  
 GitHub: [@khairulrezz4](https://github.com/khairulrezz4)
 
