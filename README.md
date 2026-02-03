@@ -1,1 +1,356 @@
-# Random-Forest-Phishing-Detection-on-Browser-Password-Manager-Extension-2025
+# Random Forest Phishing Detection Browser Extension
+
+A Chrome browser extension that integrates machine learning-based phishing detection directly into a password manager. The system uses a Random Forest classifier to identify phishing URLs in real-time and alerts users with risk indicators.
+
+**GitHub Repository:** [khairulrezz4/Random-Forest-Phishing-Detection-on-Browser-Password-Manager-Extension-2025](https://github.com/khairulrezz4/Random-Forest-Phishing-Detection-on-Browser-Password-Manager-Extension-2025)
+
+---
+
+## 🎯 Project Overview
+
+This project combines:
+- **Machine Learning**: Random Forest classifier trained on 604K+ URLs (65% benign, 35% phishing)
+- **Browser Extension**: React-based UI for password management with phishing alerts
+- **Local Server**: Flask backend serving ML predictions with real-time threat assessment
+- **Encryption**: End-to-end encryption for stored credentials
+
+### Key Features
+✅ Real-time phishing URL detection  
+✅ Password vault with encryption  
+✅ Risk indicator with color-coded warnings  
+✅ Login form detection  
+✅ Browser history analysis  
+✅ Detailed threat scoring  
+
+---
+
+## 📦 Large Files (Google Drive)
+
+The following files exceed GitHub's size limits and are hosted on Google Drive. Download and place them in the project root:
+
+| File | Size | Location | Download |
+|------|------|----------|----------|
+| **tarun_tiwari_dataset_balanced.csv** | ~1.5GB | Project root | [Download](https://drive.google.com/uc?id=YOUR_DATASET_ID) |
+| **model.pkl** | ~646MB | `ML/` folder | [Download](https://drive.google.com/uc?id=YOUR_MODEL_ID) |
+
+**Setup Instructions:**
+```bash
+# After downloading from Google Drive, place files at:
+# 1. tarun_tiwari_dataset_balanced.csv -> project_root/tarun_tiwari_dataset_balanced.csv
+# 2. model.pkl                          -> project_root/ML/model.pkl
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8+
+- Node.js 14+
+- Google Chrome/Chromium browser
+- Git
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/khairulrezz4/Random-Forest-Phishing-Detection-on-Browser-Password-Manager-Extension-2025.git
+cd Random-Forest-Phishing-Detection-on-Browser-Password-Manager-Extension-2025
+```
+
+### 2. Download Large Files from Google Drive
+Download the two files from Google Drive links above and place them in correct locations.
+
+### 3. Setup ML Backend
+```bash
+cd ML
+pip install -r requirements.txt
+python server.py
+# Server will start on http://localhost:5000
+```
+
+### 4. Setup Browser Extension
+```bash
+cd rf-password-manager
+npm install
+npm run build
+```
+
+Then load in Chrome:
+1. Open `chrome://extensions`
+2. Enable "Developer mode" (toggle in top right)
+3. Click "Load unpacked"
+4. Select `rf-password-manager/dist` folder
+
+---
+
+## 📊 Project Structure
+
+```
+├── README.md                              # This file
+├── PROJECT_MODEL_AND_DATASET.md          # Dataset documentation
+├── TESTING_EXECUTION_GUIDE.md            # Testing instructions
+├── CHAPTER_4_SYSTEM_DEVELOPMENT.md       # Development details
+│
+├── ML/                                   # Machine Learning Pipeline
+│   ├── server.py                         # Flask prediction server
+│   ├── pipeline_phishing.py              # Training & evaluation pipeline
+│   ├── model.pkl                         # Trained model (from Google Drive)
+│   ├── model_config.json                 # Configuration & thresholds
+│   ├── requirements.txt                  # Python dependencies
+│   ├── metrics_report.txt                # Training metrics
+│   └── best_params.json                  # Best hyperparameters
+│
+├── rf-password-manager/                  # React Browser Extension
+│   ├── public/
+│   │   ├── manifest.json                 # Chrome extension manifest
+│   │   ├── background.js                 # Background script
+│   │   ├── detectLogin.js                # Login detection
+│   │   └── icons/                        # Extension icons
+│   ├── src/
+│   │   ├── App.jsx                       # Main app
+│   │   ├── components/                   # UI components
+│   │   └── utils/
+│   │       ├── api.js                    # Server API client
+│   │       ├── encryption.js            # AES-256 encryption
+│   │       ├── chrome.js                # Chrome API wrapper
+│   │       ├── pinAuth.js               # PIN authentication
+│   │       └── eventLogger.js           # Event logging
+│   ├── package.json
+│   └── vite.config.js
+│
+├── docs/                                 # Diagrams & documentation
+│   ├── system_architecture.puml
+│   └── activity_diagram.puml
+│
+├── tarun_tiwari_dataset_balanced.csv    # Main dataset (from Google Drive)
+└── phishing_site_urls.csv
+```
+
+---
+
+## 🤖 Machine Learning Pipeline
+
+### Dataset
+- **Name:** `tarun_tiwari_dataset_balanced.csv`
+- **Size:** 604,287 URLs
+- **Composition:** 65% benign, 35% phishing
+- **Sources:** Tarun Tiwari + PhiUSIIL datasets
+
+### Model
+- **Algorithm:** Random Forest Classifier
+- **Features:** 30+ lexical, structural, and entropy-based features
+- **Output:** `ML/model.pkl`
+
+### Training
+```bash
+cd ML
+python pipeline_phishing.py --n-iter 20 --cores 12 --cache-features
+```
+
+This will generate:
+- `model.pkl` - Trained classifier
+- `metrics_report.txt` - Performance metrics
+- `feature_importance.png` - Feature visualization
+- `roc_curve.png` - ROC curve
+- `best_params.json` - Hyperparameters
+
+### Configuration
+Edit `ML/model_config.json`:
+```json
+{
+  "phishing_threshold": 0.5,
+  "feature_cache_dir": "feature_cache",
+  "fast_extract": true
+}
+```
+
+---
+
+## 🔌 Extension API
+
+### Server Endpoints
+
+#### POST `/predict`
+Predict if a URL is phishing.
+
+**Request:**
+```json
+{
+  "url": "https://example.com"
+}
+```
+
+**Response:**
+```json
+{
+  "url": "https://example.com",
+  "prediction": 0,
+  "confidence": 0.95,
+  "risk_level": "safe",
+  "is_phishing": false
+}
+```
+
+Risk levels: `safe` (0-0.3), `medium` (0.3-0.7), `high` (0.7-1.0)
+
+#### GET `/health`
+Check server health.
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "model_loaded": true
+}
+```
+
+---
+
+## 🛡️ Extension Features
+
+### Password Vault
+- AES-256 encryption
+- PIN-based access control
+- Master password protection
+- Auto-clear on timeout
+
+### Real-time Risk Assessment
+- URL analysis on every login
+- Color-coded risk indicators:
+  - 🟢 Green: Safe
+  - 🟡 Yellow: Medium risk
+  - 🔴 Red: Likely phishing
+- Detailed threat scoring
+
+### Login Detection
+- Automatic form detection
+- URL validation before submission
+- Security event logging
+
+---
+
+## 📋 Requirements
+
+### Python (ML Backend)
+- scikit-learn 1.3.0+
+- pandas 2.0.0+
+- flask 2.3.0+
+- flask-cors 4.0.0+
+- numpy 1.24.0+
+- joblib 1.3.0+
+
+### Node.js (Extension)
+- react 18.2.0+
+- react-dom 18.2.0+
+- vite 4.3.0+
+
+See `ML/requirements.txt` and `rf-password-manager/package.json` for full lists.
+
+---
+
+## 🧪 Testing
+
+### ML Tests
+```bash
+cd ML
+python test_openphish.py        # Test on live phishing URLs
+python test_batch.py            # Batch prediction test
+```
+
+### Extension Tests
+```bash
+cd rf-password-manager
+npm run build
+```
+
+See [TESTING_EXECUTION_GUIDE.md](TESTING_EXECUTION_GUIDE.md) for detailed procedures.
+
+---
+
+## 📈 Performance
+
+### Model Metrics
+- **Accuracy:** ~95.2%
+- **Precision:** ~94.8%
+- **Recall:** ~95.5%
+- **F1-Score:** 0.951
+- **ROC-AUC:** 0.985
+
+See `ML/metrics_report.txt` for full details.
+
+### Server Performance
+- Prediction latency: 50-100ms per URL
+- Throughput: 10+ predictions/second
+- Memory: ~2GB (model + features)
+
+---
+
+## 🔐 Security Best Practices
+
+✅ Use strong PINs (minimum 6 digits)  
+✅ Keep Chrome and extension updated  
+✅ Enable browser security extensions  
+✅ Review stored passwords regularly  
+✅ Local-only storage (no cloud sync)  
+
+---
+
+## 📚 Documentation
+
+- [PROJECT_MODEL_AND_DATASET.md](PROJECT_MODEL_AND_DATASET.md) - Dataset & model details
+- [TESTING_EXECUTION_GUIDE.md](TESTING_EXECUTION_GUIDE.md) - Testing procedures
+- [CHAPTER_4_SYSTEM_DEVELOPMENT.md](CHAPTER_4_SYSTEM_DEVELOPMENT.md) - Development notes
+
+---
+
+## 🚧 Troubleshooting
+
+### Server won't start
+```bash
+# Verify model file exists
+ls ML/model.pkl
+
+# Check Python dependencies
+pip install -r ML/requirements.txt
+
+# Run with debug output
+python ML/server.py --debug
+```
+
+### Extension not detecting predictions
+1. Ensure `python ML/server.py` is running
+2. Check browser console: F12 → Console tab
+3. Verify `http://localhost:5000/health` is accessible
+
+### Model prediction errors
+1. Verify `tarun_tiwari_dataset_balanced.csv` is downloaded
+2. Check `ML/model_config.json` exists
+3. See `ML/metrics_report.txt` for model info
+
+---
+
+## 👨‍💼 Author
+
+**Khairul Razmi**  
+Email: khairul.razmi01@s.unikl.edu.my  
+GitHub: [@khairulrezz4](https://github.com/khairulrezz4)
+
+---
+
+## 📄 License
+
+This project is provided as-is for educational and research purposes.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Tarun Tiwari** - Phishing/benign URL dataset
+- **PhiUSIIL** - Phishing dataset  
+- **scikit-learn** - ML framework
+- **React** - UI framework
+- **Flask** - Web framework
+
+---
+
+**Last Updated:** February 3, 2026  
+**Status:** Active Development
