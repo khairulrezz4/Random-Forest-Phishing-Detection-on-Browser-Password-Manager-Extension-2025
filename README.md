@@ -163,6 +163,15 @@ Edit `ML/model_config.json`:
 }
 ```
 
+**Threshold Logic:**
+- Probability **≥ 0.5** → **PHISHING** (unsafe) 🔴
+- Probability **< 0.5** → **LEGITIMATE** (safe) 🟢
+
+**Adjust threshold for different sensitivity:**
+- `0.3` = More aggressive (catch more phishing, more false positives)
+- `0.5` = Balanced (recommended)
+- `0.7` = More lenient (fewer false positives, miss some phishing)
+
 ---
 
 ## 🔌 Extension API
@@ -184,13 +193,17 @@ Predict if a URL is phishing.
 {
   "url": "https://example.com",
   "prediction": 0,
-  "confidence": 0.95,
-  "risk_level": "safe",
+  "probability": 0.15,
+  "phishing_label": "legitimate",
+  "threshold": 0.5,
   "is_phishing": false
 }
 ```
 
-Risk levels: `safe` (0-0.3), `medium` (0.3-0.7), `high` (0.7-1.0)
+**Prediction Logic:**
+- `probability >= threshold` (0.5) → `phishing_label: "phishing"`
+- `probability < threshold` (0.5) → `phishing_label: "legitimate"`
+- `is_phishing`: Boolean flag for easy use in extension
 
 #### GET `/health`
 Check server health.
