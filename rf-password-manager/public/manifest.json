@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Password Manager with Phishing Detection using Random Forest",
+  "version": "0.1",
+  "description": "A secure password manager with AI-powered phishing detection using Random Forest machine learning.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "permissions": ["storage", "scripting", "tabs", "activeTab"],
+  "background": { "service_worker": "background.js" },
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*",
+    "http://127.0.0.1:5000/*",
+    "http://localhost:5000/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["detectLogin.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'"
+  }
+}

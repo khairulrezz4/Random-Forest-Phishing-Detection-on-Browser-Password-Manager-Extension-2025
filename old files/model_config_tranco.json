@@ -1,0 +1,20 @@
+{
+  "threshold": 0.40000000000000013,
+  "model_version": "PhishTank_Tranco_v1",
+  "trained_date": "2025-11-30 22:28:07",
+  "dataset": {
+    "phishing_urls": 47884,
+    "legitimate_urls": 47884,
+    "total_urls": 95768,
+    "phishing_source": "PhishTank Nov 2025",
+    "legitimate_source": "Tranco Top 10K Daily",
+    "features": 47
+  },
+  "performance": {
+    "test_accuracy": 0.978657122025585,
+    "optimal_threshold": 0.40000000000000013,
+    "fp_rate": 1.3430127041742286,
+    "fn_rate": 2.5164456510389477,
+    "f1_score": 0.9834097013746247
+  }
+}

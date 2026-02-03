@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Manager v0.2 Simple</title>
+  <link rel="stylesheet" href="style_simple.css">
+</head>
+<body>
+  <div style="width:320px;margin:0 auto;padding:10px;">
+    <h2>Password Manager</h2>
+    <div style="margin-bottom:10px;">
+      <label><input type="checkbox" id="autofill-toggle" checked> Autofill Detection</label>
+    </div>
+    <div id="status-box" style="border:1px solid #ccc;padding:8px;margin-bottom:10px;">
+      <b>Status:</b> <span id="status-label">Unknown</span>
+      <div style="font-size:12px;color:#888;">Unable to verify this site</div>
+    </div>
+    <div id="vault-section">
+      <h4>Password Vault (<span id="vault-count">0</span>)</h4>
+      <ul id="credentials-list" style="padding-left:0;"></ul>
+    </div>
+    <button id="show-add">Add Password</button>
+    <div id="add-section" style="display:none;margin-top:10px;border-top:1px solid #ccc;padding-top:10px;">
+      <h4>Add Credential</h4>
+      <form id="add-form">
+        <input type="text" id="site" placeholder="Site URL" required><br>
+        <input type="text" id="username" placeholder="Username/Email" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
+        <select id="status">
+          <option value="Phishing">Phishing</option>
+        </select><br>
+        <button type="submit">Save</button>
+        <button type="button" id="cancel-add">Cancel</button>
+      </form>
+    </div>
+    <div style="font-size:12px;color:#888;margin-top:8px;">v0.2<br><em>Note: For demonstration, set status to 'Phishing' to simulate ML detection.</em></div>
+  </div>
+  <script src="popup_simple.js"></script>
+</body>
+</html>

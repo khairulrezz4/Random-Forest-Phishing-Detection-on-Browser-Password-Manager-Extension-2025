@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Manager v0.2</title>
+  <link rel="stylesheet" href="style_v02.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="icon-lock"></span>
+      <span class="title">Password Manager</span>
+    </div>
+    <div class="card toggle-card">
+      <span>Autofill Detection</span>
+      <label class="switch">
+        <input type="checkbox" id="autofill-toggle" checked>
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <div class="card status-card">
+      <span class="status-icon">&#10067;</span>
+      <div>
+        <div class="status-title">Status Unknown</div>
+        <div class="status-desc">Unable to verify this site</div>
+      </div>
+    </div>
+    <div class="card vault-card">
+      <span class="vault-icon">&#128272;</span>
+      <div>
+        <div class="vault-title">Password Vault</div>
+        <div class="vault-desc"><span id="vault-count">0</span> passwords saved</div>
+      </div>
+      <button id="open-vault">&#8594;</button>
+    </div>
+    <div class="card add-card">
+      <span class="add-icon">&#10133;</span>
+      <div>
+        <div class="add-title">Add Password</div>
+        <div class="add-desc">Save a new credential</div>
+      </div>
+      <button id="add-password">&#8594;</button>
+    </div>
+    <div class="footer">
+      <span class="version">v0.2</span>
+      <button id="export-logs">Export Logs</button>
+    </div>
+  </div>
+  <script src="popup_v02.js"></script>
+</body>
+</html>

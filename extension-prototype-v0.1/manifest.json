@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Password Manager Prototype v0.1",
+  "version": "0.1",
+  "description": "A simple password manager extension prototype with registration, login, dashboard, and save credential.",
+  "action": {
+    "default_popup": "popup_simple.html"
+  },
+  "permissions": ["storage"]
+}

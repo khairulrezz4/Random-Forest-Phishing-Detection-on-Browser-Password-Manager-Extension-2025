@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; width: 300px; margin: 0; padding: 10px; }
+#app { margin: 0 auto; }
+h2, h3, h4 { text-align: center; }
+input, button { display: block; margin: 8px auto; width: 90%; padding: 6px; }
+#message { text-align: center; margin-top: 10px; }
+#credentials-list { list-style: none; padding: 0; }
+#credentials-list li { background: #f0f0f0; margin: 4px 0; padding: 4px; border-radius: 4px; }

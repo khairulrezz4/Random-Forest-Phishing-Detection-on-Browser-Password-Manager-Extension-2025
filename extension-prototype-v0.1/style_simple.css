@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; background: #fff; color: #222; }
+h2 { text-align: center; }
+input, select, button { margin: 4px 0; width: 95%; padding: 5px; }
+button { width: auto; }
+ul { list-style: none; }
+#credentials-list li { border: 1px solid #ccc; margin: 4px 0; padding: 6px; border-radius: 4px; background: #f9f9f9; }
+.cred-actions button { margin-right: 4px; font-size: 0.95em; }

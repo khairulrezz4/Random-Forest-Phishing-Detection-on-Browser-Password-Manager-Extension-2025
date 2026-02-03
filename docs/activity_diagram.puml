@@ -1,0 +1,241 @@
+@startuml RF_Password_Manager_Activity_Diagram
+
+title RF Password Manager - Activity Diagram
+
+skinparam activityBackgroundColor #E8F5E9
+skinparam activityBorderColor #2E7D32
+skinparam activityDiamondBackgroundColor #FFF9C4
+skinparam activityDiamondBorderColor #F57F17
+skinparam swimlaneBorderColor #1565C0
+skinparam swimlaneTitleFontSize 14
+
+|#LightBlue|User|
+|#LightGreen|Extension|
+|#LightCoral|ML Server|
+
+|User|
+start
+
+:Open Browser Extension;
+
+|Extension|
+:Check PIN Setup Status;
+
+if (PIN Already Set?) then (No)
+  |User|
+  :Create New PIN (4-6 digits);
+  
+  |Extension|
+  :Hash PIN using SHA-256;
+  :Store Hashed PIN;
+  :Create Session (5 min);
+  
+else (Yes)
+  |Extension|
+  :Check Session Status;
+  
+  if (Session Valid?) then (No)
+    |User|
+    :Enter PIN;
+    
+    |Extension|
+    :Verify PIN Against Hash;
+    
+    if (PIN Correct?) then (No)
+      :Log EVENT: PIN_FAILED;
+      :Display Error Message;
+      
+      |User|
+      stop
+    else (Yes)
+      :Create Session (5 min);
+      :Log EVENT: PIN_VERIFIED;
+    endif
+  else (Yes)
+  endif
+endif
+
+|Extension|
+:Load Saved Credentials from Storage;
+:Display Home Page;
+
+fork
+  :Get Active Tab URL;
+fork again
+  :Load Autofill Settings;
+end fork
+
+if (Autofill Enabled?) then (No)
+  :Display "Status Unknown";
+  :Disable Autofill Features;
+  
+else (Yes)
+  |Extension|
+  :Send URL to ML Server;
+  
+  |ML Server|
+  :Receive URL;
+  :Extract 42 URL Features;
+  note right
+    Features include:
+    - URL length
+    - Domain age
+    - Special characters
+    - Subdomain count
+    - Path depth
+    - etc.
+  end note
+  
+  :Apply Feature Selection;
+  note right
+    Select 28 most
+    important features
+  end note
+  
+  :Load Random Forest Model;
+  :Run Prediction;
+  :Calculate Phishing Probability;
+  :Return Result to Extension;
+  
+  |Extension|
+  :Receive Risk Score;
+  
+  if (Risk Score >= 50%?) then (Yes)
+    :Display "PHISHING DETECTED" Warning;
+    :Show Red Alert Banner;
+    :Block Autofill for This Site;
+    :Log EVENT: PHISHING_DETECTED;
+    
+  else (No)
+    :Display "Site Verified Safe";
+    :Show Green Safe Banner;
+    :Enable Autofill;
+    :Log EVENT: SITE_VERIFIED_SAFE;
+  endif
+endif
+
+|User|
+:Select Action;
+
+switch (User Action?)
+case (View Vault)
+  |Extension|
+  :Display Password Vault Page;
+  :Show List of Saved Credentials;
+  
+  |User|
+  :Select a Credential;
+  
+  switch (Vault Action?)
+  case (Fill)
+    |Extension|
+    :Check Current Tab;
+    
+    if (Is Login Page?) then (Yes)
+      :Autofill Username Field;
+      :Autofill Password Field;
+      :Log EVENT: PASSWORD_AUTOFILLED;
+    else (No)
+      :Open Website in New Tab;
+      :Wait for Page Load;
+      :Autofill Credentials;
+      :Log EVENT: PASSWORD_AUTOFILLED;
+    endif
+    
+  case (Reveal)
+    |Extension|
+    :Display Password in Plain Text;
+    :Log EVENT: PASSWORD_REVEALED;
+    
+  case (Copy)
+    |Extension|
+    :Copy Password to Clipboard;
+    :Show "Copied" Toast;
+    :Log EVENT: PASSWORD_COPIED;
+    
+  case (Delete)
+    |Extension|
+    :Remove Credential from Storage;
+    :Update Vault List;
+    :Log EVENT: PASSWORD_DELETED;
+  endswitch
+  
+case (Add Password)
+  |Extension|
+  :Get Current Tab URL;
+  :Pre-fill Site URL Field;
+  :Display Add Password Form;
+  
+  |User|
+  :Enter Username;
+  :Enter Password;
+  :Click Save;
+  
+  |Extension|
+  :Send URL to ML Server for Check;
+  
+  |ML Server|
+  :Analyze URL Risk;
+  :Return Risk Score;
+  
+  |Extension|
+  if (Risk Score >= 50%?) then (Yes)
+    :Display Warning Message;
+    :Block Save Operation;
+    
+    |User|
+    :Acknowledge Warning;
+    
+  else (No)
+    :Encrypt and Store Credential;
+    :Update Vault List;
+    :Log EVENT: PASSWORD_SAVED;
+    :Return to Home Page;
+  endif
+  
+case (Toggle Manager ON/OFF)
+  |Extension|
+  if (Currently ON?) then (Yes)
+    :Disable Autofill Detection;
+    :Lock Vault;
+    :Clear Session;
+    :Log EVENT: MANAGER_DISABLED;
+    :Log EVENT: VAULT_LOCKED;
+  else (No)
+    if (PIN Required?) then (Yes)
+      |User|
+      :Enter PIN;
+      
+      |Extension|
+      :Verify PIN;
+    else (No)
+    endif
+    
+    :Enable Autofill Detection;
+    :Unlock Vault;
+    :Log EVENT: MANAGER_ENABLED;
+    :Log EVENT: VAULT_UNLOCKED;
+  endif
+  
+case (Export Logs)
+  |Extension|
+  :Gather All Event Logs;
+  :Calculate Statistics;
+  :Format as TXT File;
+  :Trigger File Download;
+  
+  |User|
+  :Save TXT File;
+  
+endswitch
+
+|User|
+:Close Extension Popup;
+
+|Extension|
+:Clear Active Session;
+:Log EVENT: VAULT_LOCKED;
+
+stop
+
+@enduml

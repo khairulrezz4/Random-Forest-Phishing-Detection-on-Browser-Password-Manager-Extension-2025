@@ -1,0 +1,11 @@
+{
+  "bootstrap": true,
+  "class_weight": "balanced",
+  "criterion": "gini",
+  "max_depth": 30,
+  "max_features": "log2",
+  "min_samples_leaf": 2,
+  "min_samples_split": 4,
+  "n_estimators": 500,
+  "_algo": "rf"
+}

@@ -1,0 +1,131 @@
+@startuml Password Manager with Phishing Detection - System Architecture
+
+skinparam backgroundColor #FFFFFF
+skinparam linetype ortho
+
+title System Architecture Diagram - Password Manager Extension with Phishing Detection
+
+package "Presentation Layer" {
+  
+  rectangle "Extension Popup\n(React UI)" as popup
+  note right of popup
+  - Home Page
+  - Add Password
+  - View Vault
+  - PIN Setup/Prompt
+  end note
+  
+  rectangle "Content Scripts\n(detectLogin.js)" as content
+  note right of content
+  - Scan DOM
+  - Find Login Forms
+  - Capture Credentials
+  end note
+  
+  rectangle "Display Risk Indicator" as display
+  note right of display
+  - Show Risk Level
+  - Color Coding
+  - User Alert
+  end note
+}
+
+package "Background Layer" {
+  
+  rectangle "Background Service Worker\n(background.js)" as background
+  note right of background
+  - Receive Message
+  - Route Request
+  - Handle Events
+  end note
+  
+  rectangle "Phishing Checker" as phishing
+  note right of phishing
+  - Get Active URL
+  - Call Flask API
+  - HTTP POST Request
+  end note
+  
+  rectangle "Parse ML Response" as parse
+  note right of parse
+  - Extract Score
+  - Classify Risk
+  - Update Status
+  end note
+  
+  rectangle "Credential Manager" as credential
+  note right of credential
+  - Encrypt/Decrypt
+  - CRUD Operations
+  end note
+  
+  rectangle "Web Crypto API" as crypto
+  note right of crypto
+  - AES-GCM Encryption
+  - PBKDF2 Derivation
+  - SHA-256 Hashing
+  end note
+  
+  rectangle "Chrome APIs\n(Storage)" as storage
+  note right of storage
+  - chrome.storage.local
+  - Save Encrypted Data
+  end note
+}
+
+package "Backend Server" {
+  
+  rectangle "Flask REST API\n/predict_url" as flask
+  note right of flask
+  - Receive URL
+  - Process Request
+  end note
+  
+  rectangle "Feature Extraction Engine" as features
+  note right of features
+  - Extract 42 Features
+  - Lexical Analysis
+  - Structural Analysis
+  - Security Patterns
+  end note
+  
+  rectangle "Random Forest Classifier" as rf
+  note right of rf
+  - ML Prediction
+  - Probability Score
+  end note
+  
+  rectangle "Prediction Cache" as cache
+  note right of cache
+  - Check/Store Cache
+  - LRU Strategy
+  end note
+  
+  rectangle "Return JSON Response" as response
+  note right of response
+  - Prediction Score
+  - Risk Level
+  - Confidence
+  end note
+}
+
+' ============================================================================
+' DATA FLOW
+' ============================================================================
+
+popup --> background
+content --> background
+background --> phishing
+phishing --> flask : HTTP POST
+flask --> features
+features --> rf
+rf --> cache
+cache --> response
+response --> parse : JSON Response
+parse --> display
+
+background --> credential
+credential --> crypto
+crypto --> storage
+
+@enduml

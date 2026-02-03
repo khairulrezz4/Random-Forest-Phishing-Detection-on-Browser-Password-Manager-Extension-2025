@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Manager Prototype v0.1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <h2>Password Manager</h2>
+    <div id="auth-section">
+      <input type="password" id="pin" placeholder="Enter PIN">
+      <button id="login-btn">Login</button>
+      <button id="register-btn">Register</button>
+    </div>
+    <div id="dashboard-section" style="display:none;">
+      <h3>Dashboard</h3>
+      <button id="logout-btn">Logout</button>
+      <h4>Saved Credentials</h4>
+      <ul id="credentials-list"></ul>
+      <h4>Add Credential</h4>
+      <div style="font-size:12px;color:#888;margin-bottom:6px;">
+        <em>Note: 'Status' is set manually in v0.1. In future versions, this will be detected automatically by machine learning.</em>
+      </div>
+      <input type="text" id="site" placeholder="Website">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <select id="status">
+        <option value="Legitimate">Legitimate</option>
+        <option value="Unknown">Unknown</option>
+        <option value="Phishing">Phishing</option>
+      </select>
+      <button id="add-cred-btn">Add</button>
+    </div>
+    <div id="message"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
