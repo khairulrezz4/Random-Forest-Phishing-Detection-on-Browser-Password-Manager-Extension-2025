@@ -393,7 +393,7 @@ GitHub: [@khairulrezz4](https://github.com/khairulrezz4)
 
 ## 📄 License
 
-This project is provided as-is for educational and research purposes.
+This project is provided as Final Year Project 2 subject and under Universiti Kuala Lumpur's student supervision.
 
 ---
 
