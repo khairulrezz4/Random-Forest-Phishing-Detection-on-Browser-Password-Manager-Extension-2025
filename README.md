@@ -129,11 +129,15 @@ Then load in Chrome:
 
 ## 🤖 Machine Learning Pipeline
 
-### Dataset
-- **Name:** `tarun_tiwari_dataset_balanced.csv`
-- **Size:** 604,287 URLs
-- **Composition:** 65% benign, 35% phishing
-- **Sources:** Tarun Tiwari + PhiUSIIL datasets
+### Features Used
+The model uses **27 features** extracted from URLs:
+- Lexical features (URL length, domain length, etc.)
+- Structural features (slashes, dots, hyphens, etc.)
+- Entropy-based features
+- Keyword presence detection
+- Special character analysis
+
+See `ML/metrics_report.txt` for complete feature list.
 
 ### Model
 - **Algorithm:** Random Forest Classifier
@@ -178,8 +182,8 @@ Edit `ML/model_config.json`:
 
 ### Server Endpoints
 
-#### POST `/predict`
-Predict if a URL is phishing.
+#### POST `/predict_url`
+Predict if a single URL is phishing.
 
 **Request:**
 ```json
@@ -196,23 +200,50 @@ Predict if a URL is phishing.
   "probability": 0.15,
   "phishing_label": "legitimate",
   "threshold": 0.5,
-  "is_phishing": false
+  "features": { ... },
+  "feature_importance": { "url_length": 0.25, ... },
+  "timestamp": "2026-02-04T10:30:00"
 }
 ```
 
 **Prediction Logic:**
 - `probability >= threshold` (0.5) → `phishing_label: "phishing"`
 - `probability < threshold` (0.5) → `phishing_label: "legitimate"`
-- `is_phishing`: Boolean flag for easy use in extension
 
-#### GET `/health`
-Check server health.
+#### POST `/predict_batch`
+Predict multiple URLs in one request.
+
+**Request:**
+```json
+{
+  "urls": ["https://example.com", "https://google.com"]
+}
+```
 
 **Response:**
 ```json
 {
-  "status": "ok",
-  "model_loaded": true
+  "results": [
+    { "url": "...", "prediction": 0, ... },
+    { "url": "...", "prediction": 1, ... }
+  ],
+  "count": 2
+}
+```
+
+#### GET `/health`
+Check server and model status.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "model_type": "model",
+  "model_loaded": true,
+  "feature_count": 27,
+  "phishing_threshold": 0.5,
+  "cache_size": 150,
+  "timestamp": "2026-02-04T10:30:00"
 }
 ```
 
@@ -240,22 +271,28 @@ Check server health.
 
 ---
 
-## 📋 Requirements
+### Requirements
 
-### Python (ML Backend)
-- scikit-learn 1.3.0+
-- pandas 2.0.0+
-- flask 2.3.0+
-- flask-cors 4.0.0+
-- numpy 1.24.0+
-- joblib 1.3.0+
+**Python (ML Backend)**
+```
+flask==3.0.3
+flask-cors==4.0.0
+scikit-learn==1.5.2
+pandas==2.2.2
+numpy==1.26.4
+joblib==1.4.2
+matplotlib==3.9.0
+seaborn==0.13.2
+requests==2.32.3
+```
 
-### Node.js (Extension)
-- react 18.2.0+
-- react-dom 18.2.0+
-- vite 4.3.0+
-
-See `ML/requirements.txt` and `rf-password-manager/package.json` for full lists.
+**Node.js (Browser Extension)**
+```
+react@^19.1.1
+react-dom@^19.1.1
+vite@^7.1.7
+lucide-react@^0.553.0
+```
 
 ---
 
@@ -281,17 +318,23 @@ See [TESTING_EXECUTION_GUIDE.md](TESTING_EXECUTION_GUIDE.md) for detailed proced
 ## 📈 Performance
 
 ### Model Metrics
-- **Accuracy:** ~95.2%
-- **Precision:** ~94.8%
-- **Recall:** ~95.5%
-- **F1-Score:** 0.951
-- **ROC-AUC:** 0.985
+- **Validation Accuracy:** 94.6%
+- **Validation Precision:** 95.1%
+- **Validation Recall:** 89.3%
+- **Validation F1-Score:** 0.921
+- **Test Accuracy:** 94.8%
+- **Test Precision:** 95.3%
+- **Test Recall:** 89.5%
+- **Test F1-Score:** 0.923
+- **ROC-AUC:** 0.984
 
 See `ML/metrics_report.txt` for full details.
 
 ### Server Performance
 - Prediction latency: 50-100ms per URL
-- Throughput: 10+ predictions/second
+- Batch processing: Up to 100 URLs per request
+- Prediction caching: 30-minute TTL on recent URLs
+- Cache size: 1000 recent URLs in memory
 - Memory: ~2GB (model + features)
 
 ---
